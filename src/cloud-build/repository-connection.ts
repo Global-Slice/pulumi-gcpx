@@ -1,6 +1,7 @@
 import * as gcp from '@pulumi/gcp';
 import { ComponentResource, ComponentResourceOptions, Input, Output } from '@pulumi/pulumi';
 import { Repository } from './repository';
+import { Enabler, ServiceName } from '../services/enabler';
 
 enum RepositoryConnectionType {
 	GitHubRepositoryConnectionType,
@@ -60,6 +61,7 @@ export class RepositoryConnection extends ComponentResource {
 
 		const connection = new gcp.cloudbuildv2.Connection(name, creatConnectionArgs(args), {
 			parent: this,
+			dependsOn: [Enabler.enableService(ServiceName.CLOUD_BUILD)],
 			provider: opts?.provider,
 		});
 		this.connectionId = connection.id;
@@ -69,7 +71,7 @@ export class RepositoryConnection extends ComponentResource {
 		return new Repository(
 			`${this.name}/${name}`,
 			{ project: this.args.project, connection: this, uri: 'https://github.com/' },
-			{ dependsOn: [this] },
+			{ dependsOn: [this, Enabler.enableService(ServiceName.CLOUD_BUILD)] },
 		);
 	}
 }

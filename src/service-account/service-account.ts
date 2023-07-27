@@ -1,6 +1,7 @@
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
 import * as gcp from '@pulumi/gcp';
 import * as pulumi from '@pulumi/pulumi';
+import { Enabler, ServiceName } from '../services/enabler';
 
 function toCapital(s: string) {
 	return s[0].toUpperCase() + s.substring(1);
@@ -35,7 +36,7 @@ export class ServiceAccount extends ComponentResource {
 				accountId: `${name}-sa-build`,
 				description: `service account to build ${name}`,
 			},
-			{ parent: this, provider: opts?.provider },
+			{ parent: this, provider: opts?.provider, dependsOn: [Enabler.enableService(ServiceName.IAM)] },
 		);
 		this.email = serviceAccount.email;
 	}

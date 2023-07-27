@@ -3,6 +3,7 @@ import * as pulumi from '@pulumi/pulumi';
 import { ComponentResource, ComponentResourceOptions, Input, Output } from '@pulumi/pulumi';
 import { BucketRoles } from './roles';
 import { IAMBindingCreator } from '../iam-binding-creator';
+import { Enabler, ServiceName } from '../services/enabler';
 
 export interface BucketArgs {
 	project: Input<string>;
@@ -28,7 +29,7 @@ export class Bucket extends ComponentResource {
 				project,
 				name: `${name}-${pulumi.getStack()}`,
 			},
-			{ dependsOn: [], parent: this, provider: opts?.provider },
+			{ dependsOn: [Enabler.enableService(ServiceName.CLOUD_STORAGE)], parent: this, provider: opts?.provider },
 		);
 
 		this.bucketName = bucket.name;
@@ -36,6 +37,10 @@ export class Bucket extends ComponentResource {
 	}
 
 	public grantRole(role: BucketRoles, ...serviceAccounts: gcp.serviceaccount.Account[]) {
-		this.bindingCreator.bind(`${this.name}-${role}`, { role, serviceAccounts });
+		this.bindingCreator.bind(
+			`${this.name}-${role}`,
+			{ role, serviceAccounts },
+			{ dependsOn: [Enabler.enableService(ServiceName.CLOUD_STORAGE)] },
+		);
 	}
 }

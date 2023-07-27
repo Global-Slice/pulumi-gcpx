@@ -1,5 +1,6 @@
 import { ComponentResource, ComponentResourceOptions, Input, Output } from '@pulumi/pulumi';
 import * as gcp from '@pulumi/gcp';
+import { Enabler, ServiceName } from '../services/enabler';
 
 export interface SecretArgs {
 	project: Input<string>;
@@ -19,7 +20,7 @@ export class Secret extends ComponentResource {
 				replication: {},
 				secretId: name,
 			},
-			{ parent: this, provider: opts?.provider },
+			{ parent: this, provider: opts?.provider, dependsOn: [Enabler.enableService(ServiceName.SECRET_MANAGER)] },
 		);
 		this.secretId = secret.secretId;
 
@@ -30,7 +31,11 @@ export class Secret extends ComponentResource {
 				secret: secret.id,
 				secretData: value,
 			},
-			{ parent: this, provider: opts?.provider, dependsOn: [secret] },
+			{
+				parent: this,
+				provider: opts?.provider,
+				dependsOn: [secret, Enabler.enableService(ServiceName.SECRET_MANAGER)],
+			},
 		);
 	}
 }
