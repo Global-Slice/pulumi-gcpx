@@ -1,0 +1,26 @@
+{
+    "name": "pulumi-gcpx",
+    "main": "src/index.ts",
+    "devDependencies": {
+        "@types/node": "^20",
+        "@typescript-eslint/eslint-plugin": "^6.2.0",
+        "@typescript-eslint/parser": "^6.2.0",
+        "depcheck": "^1.4.3",
+        "eslint": "^8.45.0",
+        "eslint-config-prettier": "^8.9.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "prettier": "^3.0.0",
+        "typescript": "^5.1.6"
+    },
+    "scripts": {
+        "depcheck": "depcheck",
+        "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+        "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+        "test": "jest"
+    },
+    "dependencies": {
+        "@pulumi/gcp": "^6.61.0",
+        "@pulumi/mongodbatlas": "^3.9.2",
+        "@pulumi/pulumi": "^3.76.1"
+    }
+}
