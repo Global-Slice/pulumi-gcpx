@@ -19,7 +19,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "@pulumi/gcp": "^6.61.0",
+        "@pulumi/gcp": "^7.0.0",
         "@pulumi/mongodbatlas": "^3.9.2",
         "@pulumi/pulumi": "^3.76.1"
     }
